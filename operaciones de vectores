@@ -147,6 +147,41 @@ void generarprim(int vec[],int n){
 	}
 }
 
+void espiral(int vec[],int n){
+	int i,b=0,x=0,y=n-1,p=1;
+	for(i=0;i<n;i++){
+		if(b==0){
+			vec[x]=p;
+			x++;
+			b=1;
+		}else{
+			vec[y]=p;
+			y--;
+			b=0;
+		}
+		p++;
+	}
+}
+
+void espiralprim(int vec[],int n){
+	int i,b=0,x=0,y=n-1,p=1;
+	while(i<n){
+		if(verifprim(p)==true){
+			if(b==0){
+				vec[x]=p;
+				x++;
+				b=1;
+			}else{
+				vec[y]=p;
+				y--;
+				b=0;
+			}
+			i++;
+		}
+		p++;
+	}
+}
+
 void main(){
 	int vec[100],n,opcion,v2[25],n2,elem;
 	do
@@ -163,6 +198,8 @@ void main(){
 		cout<<endl<<"\n\t7,- veirficacion de elemento del usuario";
 		cout<<endl<<"\n\t8.- generar automaticamente los numeros fibo";
 		cout<<endl<<"\n\t9.- generar automaticamente los numeros primos";
+		cout<<endl<<"\n\t10.-generar automaticamente los numeros en forma espiral";
+		cout<<endl<<"\n\t11.-generar automaticamente los numeros primos de forma espiral";
 		cout<<endl<<"\n\t0.- salir";
 		cout<<endl<<"===============================================";
 		cout<<endl<<"seleciona una opcion :";
@@ -201,6 +238,14 @@ void main(){
 			    cin>>n;
 				generarprim(vec,n);
 				break;
+		case 10: cout<<"\nintroducir n numeros que desee generar: ";
+			     cin>>n;
+				 espiral(vec,n);
+				 break;
+		case 11: cout<<"\nintrodrucir n numero que desee generar: ";
+			     cin>>n;
+				 espiralprim(vec,n);
+				 break;
 		}
 	}while(opcion!=0);
 }
