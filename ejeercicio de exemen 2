@@ -1,0 +1,47 @@
+#include<iostream>
+#include"conio.h"
+using namespace std;
+#define MAX 10
+void cargar(int vecA[MAX],int n) {
+	int i;
+	for (i = 0; i < n;i++) {
+		cout << "ingrese elementos del vector: ";
+		cin >> vecA[i];
+	}
+}
+bool capicua(int a) {
+	bool k = false;
+	int s,p=0,t=a;
+	while (a > 0) {
+		s = a % 10;
+		p = p*10 + s;
+		a = a / 10;
+	}
+	if (p == t) {
+		k = true;
+	}
+	return(k);
+}
+void op(int vecA[MAX], int vecB[MAX], int n) {
+	int i,j=0;
+	for (i = 0; i < n;i++) {
+		if (capicua(vecA[i]) == true) {
+			vecB[j] = vecA[i];
+			cout << "vecB[" << j<< "]: " << vecB[j] << endl;
+			j++;
+		}
+	  }
+	}
+	
+
+void main() {
+	int vecA[MAX], vecB[MAX],n;
+	do 
+	{
+		cout << "ingrese el tamano: ";
+		cin >> n;
+	} while ((n <= 0) || (n > MAX));
+	cargar(vecA,n);
+	op(vecA,vecB,n);
+	_getch();
+}
