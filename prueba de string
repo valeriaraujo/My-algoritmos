@@ -1,0 +1,238 @@
+#include "stdafx.h"
+#include <iostream>
+#include <string>
+#include <stdio.h>
+#include <conio.h>
+#include<stdlib.h>
+using namespace std;
+
+struct regAgenda{
+	string nombre;
+	int edad;
+	string email;
+	char estado;
+};
+
+void crearArchivo()
+{
+	FILE *ptr;
+	ptr= fopen("nomArch.dat","wb");//crea si no existe, si existe el contenido se pierde
+	fclose(ptr);
+}
+
+void solicitarDatos(regAgenda *reg) //define un puntero a la variable reg
+{
+	cout<<endl<< "Introducir Nombre:";
+	do{
+		
+		getline(cin,reg->nombre);// reg.nombre --- reg->nombre 
+
+	}while(reg->nombre.length() == 0);
+	cout<< "Edad:";
+	cin>>reg->edad;
+	cout<<"Email:";	
+	do{
+		getline(cin,reg->email);
+	}while(reg->email.length() == 0);
+	reg->estado='N';
+}
+
+void mostrarRegistro(regAgenda reg, int nroReg)
+{
+	cout<<endl<< nroReg<<".-"<< reg.nombre<< "         "<<reg.edad<< "    "<< reg.email;
+}
+
+void adicionarRegistro()
+{
+	FILE *ptr;
+	regAgenda reg;
+	ptr= fopen("nomArch.dat", "ab");//abre el archivo y coloca el puntero al final del archivo 
+	solicitarDatos(&reg);
+	fwrite(&reg, sizeof(struct regAgenda),1,ptr);//escribe un registro en el archivo
+	fclose(ptr);// cierra el archivo
+}
+
+void listarArchivo()
+{
+	FILE *ptr;
+	regAgenda reg;
+	int cont=0;
+	ptr= fopen("nomArch.dat","rb");//abre el archivo para leer y el ptr queda en el 1er registro
+	if(ptr == NULL)
+	{
+		cout<< "EL archivo no existe...";
+	}
+	else
+	{
+		cout<<endl<<"   ** LISTADO DE AMIGOS **";
+		cout<<endl<<" Nombre      Edad      Email";
+		cout<<endl<<"----------------------------";
+		fread(&reg, sizeof(struct regAgenda),1,ptr);
+		while(!feof(ptr))
+		{
+			if(reg.estado=='N')
+			{
+				mostrarRegistro(reg,cont+1);
+			}
+			fread(&reg, sizeof(struct regAgenda),1,ptr);//lee un registro del archivo
+			cont++;
+		}
+		fclose(ptr);
+	}
+}
+
+void buscarRegistro( int nroReg)
+{
+	FILE *ptr;
+	regAgenda reg;
+	ptr= fopen("nomArch.dat","rb");
+	if(ptr== NULL)
+	{
+		cout<< "El archivo no existe...";
+	}
+	else
+	{
+		fseek(ptr, (nroReg-1)*sizeof(reg),SEEK_SET);//posiciona el ptr en un reg especifico
+		fread(&reg, sizeof(struct regAgenda),1,ptr);
+		if(feof(ptr))
+			cout<<endl<< "Rrgistro no existe";
+		else
+			{if(reg.estado=='N')
+				mostrarRegistro(reg,nroReg);
+			else
+				cout<<endl<< "Registro eliminado...";
+		     }
+		fclose(ptr);
+	}
+
+}
+
+
+void modificarRegistro( int nroReg)
+{
+	FILE *ptr;
+	regAgenda reg;
+	ptr= fopen("nomArch.dat", "r+b");
+	if(ptr== NULL)
+	{
+	cout<< "El archivo no existe...";
+	}
+else
+	{
+	fseek(ptr, (nroReg-1)*sizeof(reg),SEEK_SET);
+	fread(&reg, sizeof(struct regAgenda),1,ptr);
+		if(feof(ptr))
+		{
+			cout<<endl<< "Rrgistro no existe";
+		}
+		else
+		{
+		if(reg.estado=='N')
+		{	mostrarRegistro(reg,nroReg);
+			solicitarDatos(&reg);
+			fseek(ptr, (nroReg-1)*sizeof(reg),SEEK_SET);
+			fwrite(&reg, sizeof(struct regAgenda),1,ptr);
+		}
+		else
+		{
+			cout<<endl<< "Registro eliminado...";
+			
+		}
+		fclose(ptr);
+		}
+	}
+}
+
+void eliminarRegistro(int nroReg)
+{
+	FILE *ptr;
+	regAgenda reg;
+	ptr= fopen("nomArch.dat", "r+b");
+	if(ptr== NULL)
+	{
+	cout<< "El archivo no existe...";
+	}
+else
+	{
+	fseek(ptr, (nroReg-1)*sizeof(reg),SEEK_SET);
+	fread(&reg, sizeof(struct regAgenda),1,ptr);
+		if(feof(ptr))
+		{
+			cout<<endl<< "Rrgistro no existe";
+		}
+		else
+		{
+		if(reg.estado=='N')
+		{	mostrarRegistro(reg,nroReg);
+			reg.estado= 'S';
+			fseek(ptr, (nroReg-1)*sizeof(reg),SEEK_SET);
+			fwrite(&reg, sizeof(struct regAgenda),1,ptr);
+			cout<<endl<< "Registro eliminado exitosamente";
+		}
+		else
+		{
+			cout<<endl<< "Registro ya eliminado...";
+			
+		}
+		fclose(ptr);
+		}
+	}
+}
+
+int main()
+{int opcion;
+	do{
+		cout<<"\n****************MENU****************\n";
+		cout<<"1.- Adicionar registro\n";
+		cout<<"2.- Listar registro\n";
+		cout<<"3.- Buscar registro\n";
+		cout<<"4.- Modificar registro\n";
+		cout<<"5.- Eliminar registros\n";
+		cout<<"0.- Salir\n";
+		cout<<"Elegir opcion:";
+		cin>>opcion;
+		switch(opcion){
+			case 1:
+				crearArchivo();
+				adicionarRegistro();
+				getch();
+				break;
+			case 2:
+				listarArchivo();
+				getch();
+				break;
+			case 3:
+				int nro3;
+				cout<<"Ingresar nro de registro:";
+				cin>>nro3;
+				buscarRegistro(nro3);
+				getch();
+				break;
+			case 4:
+				int nro4;
+				cout<<"Ingresar nro de registro:";
+				cin>>nro4;
+				modificarRegistro(nro4);
+				getch();
+				break;
+			case 5:
+				int nro5;
+				cout<<"Ingresar nro de registro:";
+				cin>>nro5;
+				eliminarRegistro( nro5);
+				getch();
+				break;
+			case 0:
+				break;
+			default:
+				cout<<"Opcion invalida";
+				getch();
+				break;
+		}
+		system("cls");
+	}while(opcion!=0);
+	getch();
+	return 0;
+
+}
+
