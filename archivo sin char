@@ -5,10 +5,10 @@
 using namespace std;
 
 struct regagenda{
-	char nombre[100];
+	string nombre;
 	int edad;
-	char email[100];
-	char estado;
+	string email;
+	string estado;
 };
 void creararchivo(){
 	FILE *ptr;
@@ -18,15 +18,15 @@ void creararchivo(){
 void solicitardatos(regagenda &reg){
 	cout<<"introdusca nombre: ";
 	do{
-		gets(reg.nombre);
-	}while(strlen(reg.nombre)==0);
+		getline(cin,reg.nombre);
+	}while(reg.nombre.lenth()==0);
 		cout<<"edad: ";
 		cin>>reg.edad;
 		cout<<"email: ";
 		do
 		{
-			gets(reg.email);
-		}while(strlen(reg.email)==0);
+			getline(cin,reg.email);
+		}while(reg.email.lenth()==0);
 		reg.estado='n';
 }
 void addicionararchivo(){
